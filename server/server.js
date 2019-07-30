@@ -23,14 +23,17 @@ let mongooseOptions = {
 
 // });
 
-mongoose.connect(process.env.URLDB, mongooseOptions)
-    .then(() => {
-        console.log("URL de coneccion: ", process.env.URLDB);
-        console.log("Base de datos ONLINE");
-    })
-    .catch((err) => {
-        console.error(`Mongoose connection error: ${err}`);
-    });
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true });
+var db = mongoose.connection;
+
+// mongoose.connect(process.env.URLDB, mongooseOptions)
+//     .then(() => {
+//         console.log("URL de coneccion: ", process.env.URLDB);
+//         console.log("Base de datos ONLINE");
+//     })
+//     .catch((err) => {
+//         console.error(`Mongoose connection error: ${err}`);
+//     });
 
 app.listen(process.env.PORT, () => {
     console.log('Escuchando puerto: ', process.env.PORT);
