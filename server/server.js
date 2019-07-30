@@ -15,15 +15,21 @@ let mongooseOptions = {
     useFindAndModify: false
 }
 
-console.log('URL coneccion a DB: ', process.env.URLDB);
+mongoose.connect(process.env.URLDB, mongooseOptions, (err, res) => {
 
-mongoose.connect(process.env.URLDB, mongooseOptions)
-    .then(() => {
-        console.log("Base de datos ONLINE");
-    })
-    .catch((err) => {
-        console.error(`Mongoose connection error: ${err}`);
-    });
+    if (err) throw err;
+
+    console.log('Base de datos ONLINE');
+
+});
+
+// mongoose.connect(process.env.URLDB, mongooseOptions)
+//     .then(() => {
+//         console.log("Base de datos ONLINE");
+//     })
+//     .catch((err) => {
+//         console.error(`Mongoose connection error: ${err}`);
+//     });
 
 app.listen(process.env.PORT, () => {
     console.log('Escuchando puerto: ', process.env.PORT);
