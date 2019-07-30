@@ -1,44 +1,30 @@
+require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');
-require('./config/config');
+const mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(require('./routes/usuario'));
 
-app.get('/usuario', function(req, res) {
-    res.json('get usuario')
-});
+let mongooseOptions = {
+    useNewUrlParser: true,
+    useFindAndModify: false
+}
 
-app.post('/usuario', function(req, res) {
+console.log('URL coneccion a DB: ', process.env.URLDB);
 
-    let body = req.body;
-
-    if (body.nombre === undefined) {
-
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
-        });
-    } else {
-        res.json({
-            persona: body
-        });
-    }
-})
-
-app.put('/usuario/:id', function(req, res) {
-
-    let id = req.params.id;
-    res.json({ id });
-})
-
-app.delete('/usuario', function(req, res) {
-    res.json('delete usuario')
-})
-
+mongoose.connect(process.env.URLDB, mongooseOptions)
+    .then(() => {
+        console.log("Base de datos ONLINE");
+    })
+    .catch((err) => {
+        console.error(`Mongoose connection error: ${err}`);
+    });
 
 app.listen(process.env.PORT, () => {
-    console.log('Listening port '), process.env.PORT;
+    console.log('Escuchando puerto: ', process.env.PORT);
 });
