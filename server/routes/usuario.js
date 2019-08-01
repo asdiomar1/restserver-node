@@ -1,10 +1,22 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const _ = require('underscore');
+const verifyToken = require('../middleware/middlewares');
 const app = express();
 const User = require('../models/usuario')
 
-app.get('/usuario', function(req, res) {
+app.get('/usuario', async(req, res) => {
+
+    let tokenValid = await verifyToken.getToken(req);
+
+    if (!tokenValid) {
+        return res.status(401).json({
+            ok: false,
+            err: {
+                message: 'Token invalido'
+            }
+        });
+    }
 
     let skip = Number(req.query.skip || 0);
     let limit = Number(req.query.limit || 5);
@@ -14,10 +26,7 @@ app.get('/usuario', function(req, res) {
         .limit(limit)
         .exec((err, users) => {
             if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    err
-                });
+                throwCommonExecption(res, err);
             }
 
             User.countDocuments({ status: true }, (err, count) => {
@@ -43,10 +52,7 @@ app.post('/usuario', function(req, res) {
 
     user.save((err, usuarioDB) => {
         if (err) {
-            return res.status(400).json({
-                ok: false,
-                err
-            });
+            throwCommonExecption(res, err);
         }
 
         res.json({
@@ -65,10 +71,7 @@ app.put('/usuario/:id', function(req, res) {
     User.findByIdAndUpdate(id, body, { new: true }, (err, userDB) => {
 
         if (err) {
-            return res.status(400).json({
-                ok: false,
-                err
-            });
+            throwCommonExecption(res, err);
         }
 
         res.json({ ok: true, usuario: userDB });
@@ -84,10 +87,7 @@ app.delete('/usuario/:id', function(req, res) {
 
     User.findByIdAndUpdate(id, changeStatus, { new: true }, (err, user) => {
         if (err) {
-            return res.status(400).json({
-                ok: false,
-                err
-            });
+            throwCommonExecption(res, err);
         }
 
         if (!user) {
@@ -102,5 +102,12 @@ app.delete('/usuario/:id', function(req, res) {
         res.json({ ok: true, user });
     })
 })
+
+function throwCommonExecption(res, err) {
+    return res.status(400).json({
+        ok: false,
+        err
+    });
+}
 
 module.exports = app;

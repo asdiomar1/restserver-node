@@ -22,3 +22,13 @@ if (process.env.NODE_ENV === 'dev') {
 }
 
 process.env.URLDB = urlDB;
+
+//==========================
+//  Validez TOKEN
+//==========================
+process.env.TOKEN_VALIDTY = 60 * 60 * 24 * 30;
+
+//==========================
+//  TOKEN Seed
+//==========================
+process.env.TOKEN_SEED = process.env.TOKEN_SEED || 'this-is-the-seed-of-development';
