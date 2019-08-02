@@ -32,3 +32,13 @@ process.env.TOKEN_VALIDTY = 60 * 60 * 24 * 30;
 //  TOKEN Seed
 //==========================
 process.env.TOKEN_SEED = process.env.TOKEN_SEED || 'this-is-the-seed-of-development';
+
+//==========================
+//  TOKEN SALT
+//==========================
+process.env.TOKEN_SALT = process.env.TOKEN_SALT || 'salt';
+
+//==========================
+//  TOKEN ALGORITHM
+//==========================
+process.env.TOKEN_ALGORITHM = process.env.TOKEN_ALGORITHM || 'aes-192-cbc';

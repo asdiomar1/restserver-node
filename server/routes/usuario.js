@@ -1,22 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const _ = require('underscore');
-const verifyToken = require('../middleware/middlewares');
+const verifyToken = require('../middleware/auth');
 const app = express();
 const User = require('../models/usuario')
 
-app.get('/usuario', async(req, res) => {
-
-    let tokenValid = await verifyToken.getToken(req);
-
-    if (!tokenValid) {
-        return res.status(401).json({
-            ok: false,
-            err: {
-                message: 'Token invalido'
-            }
-        });
-    }
+app.get('/usuario', verifyToken.isAuthorized, (req, res) => {
 
     let skip = Number(req.query.skip || 0);
     let limit = Number(req.query.limit || 5);
@@ -55,6 +44,7 @@ app.post('/usuario', function(req, res) {
             throwCommonExecption(res, err);
         }
 
+        //TODO: Retornar solamente un mensaje
         res.json({
             ok: true,
             user: usuarioDB
